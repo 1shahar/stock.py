@@ -32,20 +32,24 @@ def priceDiv(stock=[]):
     for tkrs in stock:
         price = price_now(tkrs.upper())
         print(f"-{tkrs}- --{price[0]}$ div: {price[1]} monthly-div {price[1]/12:.2f}")
-    print("\n")
+    
 #------------------------------------------------------------------------------------------  
-# first cost        
-def Firstcost(tkr="",amount=0,div=0,enter_price=0,tax=2.5):
+# first cost and risk       
+def Firstcost(tkr="",amount=0,div=0,enter_price=0,risk=0,profit=0, tax=2.5):
     cost = (amount*enter_price)+tax
-    print(f"{tkr} amount-{amount}- cost {cost}$/ {cost*float(USD_ILS()):.2f} ---- div {div*amount:.2f}$ /{div*amount*float(USD_ILS()):.2f}")
-    print("\n")
+    buy_value=(amount*enter_price)+tax
+    stop_value=(amount*risk)-buy_value+-2.5
+    profit_value=(amount*profit)-buy_value-2.5
+
+    print(f"{tkr} amount-{amount}- cost {cost}$/ {cost*float(USD_ILS()):.2f} ---- div {div*amount:.2f}$ /{div*amount*float(USD_ILS()):.2f} "
+         f"stop:{stop_value}$/{stop_value*float(USD_ILS())} profit:{profit_value}$/{profit_value*float(USD_ILS()):.2f} ")
+    
 #------------------------------------------------------------------------------------------  
 # stop and profit
 def StopProfit(tkr="spyi",buy_value=5000 ,amount=100, stop_loss=45, take_profit=55):
     stop_value=(amount*stop_loss)-buy_value+-2.5
     profit_value=(amount*take_profit)-buy_value-2.5
-    print(f"{tkr} - buy:{buy_value}$ stop:{stop_value}$/{stop_value*float(USD_ILS())} profit:{profit_value}$/{profit_value*float(USD_ILS()):.2f} ")
-    print("\n")
+    
 #------------------------------------------------------------------------------------------  
 # stock carolation 
 class StockAnalyzer:
@@ -63,18 +67,7 @@ class StockAnalyzer:
         print(correlation_matrix)
         first_row_sum = correlation_matrix.iloc[0].sum()
         print(f"corlation: {first_row_sum:.2f}/0")
-        print ("\n")
-#------------------------------------------------------------------------------------------  
-# balance 2 stock 
-def balance_2_stock(price_stock_A = 0,price_stock_B = 0,investment_amount = 0):
-    shares_stock_A = investment_amount / price_stock_A
-    shares_stock_B = investment_amount / price_stock_B
-    shares_stock_A = int(shares_stock_A)
-    shares_stock_B = int(shares_stock_B)
-    print(f"Number of shares to buy form A: {shares_stock_A}")
-    print(f"Number of shares to buy form B: {shares_stock_B}")
-    print ("\n")
-
+        
 #------------------------------------------------------------------------------------------  
 # balance all stock 
 class StockBalancer:
@@ -105,13 +98,15 @@ class StockBalancer:
         allocations = self.balance_investment(investment_amount)
         for ticker, shares in allocations.items():
             print(f"Number of shares to buy for {ticker}: {shares}")
-        print ("\n")
+        
 #------------------------------------------------------------------------------------------
 # My-stock 
 
 class Protfolio_stock():
     profit=0
     div=0
+    acount=22000
+
     def __init__(self,tkr="", amount=0 , enter_price=0 , risk=0 , reword=0 , tax= 2.5 ):
         self.amount =amount 
         self.tkr =tkr 
@@ -138,9 +133,11 @@ class Protfolio_stock():
         print(f"{self.tkr} ||Price: buy:{real_price:.2f} now:{now_price[0]} ||value buy:{self.buy_value:.2f} -now:{now_value:.2f} profit: {profit:.2f} {profit_prosent:.2f}% stop:{self.risk} take:{self.reword}")
         Protfolio_stock.profit+=profit
         Protfolio_stock.div+=get_div
+        
     @classmethod
     def mystock_total(cls):
         print("\n")
+        print (f"start year acount: {cls.acount:.2f}")
         print (f"profit: {cls.profit:.2f}")
         print (f"div {cls.div:.2f}")
 
